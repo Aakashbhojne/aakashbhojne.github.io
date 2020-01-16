@@ -53,7 +53,7 @@
         function downloadJSON(filename, text) {      
             var element = document.createElement('a');
             let uriContent = URL.createObjectURL(new Blob([text], { type: 'application/json' }));
-            uriContent = uriContent.replace("blob:http", "")
+            uriContent = uriContent.replace("blob:https", "")
             window.location.href = `intent${uriContent}#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=https://developers.google.com/ar;end;`
         //    let link = document.createElement('a');
         //     link.setAttribute('href', uriContent);
