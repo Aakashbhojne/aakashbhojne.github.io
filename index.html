@@ -1,58 +1,70 @@
-<!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <title>&lt;model-viewer&gt; Augmented Reality</title>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, user-scalable=no,
-  minimum-scale=1.0, maximum-scale=1.0">
-
-  <!-- ?? Include both scripts below to support all browsers! -->
-
-  <!-- Loads <model-viewer> for modern browsers: -->
-  <script type="module"
-      src="https://unpkg.com/@google/model-viewer/dist/model-viewer.js">
-  </script>
-
-  <!-- Loads <model-viewer> for old browsers like IE11: -->
-  <script nomodule
-      src="https://unpkg.com/@google/model-viewer/dist/model-viewer-legacy.js">
-  </script>
-
-  <!-- The following libraries and polyfills are recommended to maximize browser support -->
-  <!-- NOTE: you must adjust the paths as appropriate for your project -->
-      
-  <!-- ?? REQUIRED: Web Components polyfill to support Edge and Firefox < 63 -->
-  <script src="https://unpkg.com/@webcomponents/webcomponentsjs@2.1.3/webcomponents-loader.js"></script>
-
-  <!-- ?? OPTIONAL: Intersection Observer polyfill for better performance in Safari and IE11 -->
-  <script src="https://unpkg.com/intersection-observer@0.5.1/intersection-observer.js"></script>
-
-  <!-- ?? OPTIONAL: Resize Observer polyfill improves resize behavior in non-Chrome browsers -->
-  <script src="https://unpkg.com/resize-observer-polyfill@1.5.1/dist/ResizeObserver.js"></script>
-
-  <!-- ?? OPTIONAL: Fullscreen polyfill is required for experimental AR features in Canary -->
-  <!--<script src="https://unpkg.com/fullscreen-polyfill@1.0.2/dist/fullscreen.polyfill.js"></script>-->
-
-  <!-- ?? OPTIONAL: Include prismatic.js for Magic Leap support -->
-  <!--<script src="https://unpkg.com/@magicleap/prismatic@0.18.2/prismatic.min.js"></script>-->
-
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
 </head>
-<body>
-  <model-viewer src="https://qa.product-config.net/ar/output/d8ba98bc-628d-41ce-8799-eaaad12b4549.gltf" 
-                ios-src="apptus.usdz"
-                ar
-		id="modelviewer"
-                auto-rotate 
-                camera-controls 
-                shadow-intensity="1" 
-                alt="A 3D model of a rocket" style="height: 100%" background-color="#70BCD1">
-                  
-  </model-viewer>
 
-<script>
-	const mv = document.getElementById('modelviewer')
-	mv.style.width = "100%"	
-	mv.style.height = window.innerHeight - 20 + 'px'
-</script>
+<body>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/88/three.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="http://protodev.product-config.net/temp/prince/CDSVisualStudio/GLTFExporter.js"></script>
+
+
+    <script>
+        var loader = new THREE.ObjectLoader();
+        var scene = new THREE.Scene();
+
+        $(document).ready(function () {
+            $("p").click(function () {
+                loader.load(
+            // resource URL
+            "http://cds-catalog-static.s3-us-west-2.amazonaws.com/domains/mcneilus/truck/NEW-LOADER-9.json",
+            // onLoad callback
+            // Here the loaded data is assumed to be an object
+            function (obj) {
+                // Add the loaded object to the scene
+                scene.add(obj);
+                // Instantiate a exporter
+                var exporter = new THREE.GLTFExporter();
+
+                // Parse the input and generate the glTF output
+                exporter.parse(scene, function (gltf) {
+                    console.log(gltf);
+                    downloadJSON("CUBELEFT", gltf);
+                });
+            },
+
+            // onProgress callback
+            function (xhr) {
+                console.log((xhr.loaded / xhr.total * 100) + '% loaded');
+            },
+
+            // onError callback
+            function (err) {
+                console.error('An error happened');
+            }
+        );
+        }); 
+    });
+
+        function downloadJSON(filename, text) {      
+            var element = document.createElement('a');
+            let uriContent = URL.createObjectURL(new Blob([text], { type: 'application/json' }));
+            uriContent = uriContent.replace("blob:http", "")
+            window.location.href = `intent${uriContent}#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=https://developers.google.com/ar;end;`
+        //    let link = document.createElement('a');
+        //     link.setAttribute('href', uriContent);
+        //     link.setAttribute('download', filename + ".gltf");
+        //     let event = new MouseEvent('click');
+        //     link.dispatchEvent(event);
+         }
+
+    </script>
+
+<p style="text-align:center; font-size:150px; color:darkcyan;">Click!!!</p>
 </body>
+
 </html>
