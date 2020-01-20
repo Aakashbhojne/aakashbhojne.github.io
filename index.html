@@ -55,12 +55,30 @@
             let uriContent = URL.createObjectURL(new Blob([text], { type: 'application/json' }));
 //             uriContent = uriContent+".gltf"
 //             uriContent = uriContent.replace("blob:https", "")
+            var element = document.createElement('a');
+            let uriContent = URL.createObjectURL(new Blob([text], { type: 'application/json' }));
+            var xhr = new XMLHttpRequest;
+            xhr.responseType = 'blob';
+
+            xhr.onload = function () {
+                var recoveredBlob = xhr.response;
+
+                var reader = new FileReader;
+
+                reader.onload = function () {
+                    var blobAsDataUrl = reader.result;
+                    window.location = blobAsDataUrl;
+                };
+
+                reader.readAsDataURL(recoveredBlob);
+            };
+
+            xhr.open('GET', uriContent);
+            xhr.send();
+            // uriContent = uriContent+".gltf"
+            // uriContent = uriContent.replace("blob:http", "")
             window.location.href = `intent${uriContent}#Intent;scheme=https;package=com.google.android.googlequicksearchbox;action=android.intent.action.VIEW;S.browser_fallback_url=https://developers.google.com/ar;end;`
-        //    let link = document.createElement('a');
-        //     link.setAttribute('href', uriContent);
-        //     link.setAttribute('download', filename + ".gltf");
-        //     let event = new MouseEvent('click');
-        //     link.dispatchEvent(event);
+        
          }
 
     </script>
